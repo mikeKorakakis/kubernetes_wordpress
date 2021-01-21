@@ -1,49 +1,49 @@
----
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: dashboard-gateway
-  namespace: wordpress
-spec:
-  selector:
-    istio: ingressgateway # use istio default controller
-  servers:
-  - hosts:
-    - "dashboard.korakakis.com"
-    port:
-      name: https
-      number: 443
-      protocol: HTTPS
-    tls:
-      mode: PASSTHROUGH
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: dashboard
-  namespace: wordpress
-spec:
-  hosts:
-  - "dashboard.korakakis.com"
-  gateways:
-  - dashboard-gateway
-  tls:
-  - match:
-    - port: 443
-      sniHosts:
-      - dashboard.korakakis.com
-    route:
-    - destination:
-        host: kubernetes-dashboard.kube-system.svc.cluster.local
-        port:
-          number: 443
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: Gateway
+# metadata:
+#   name: dashboard-gateway
+#   namespace: wordpress
+# spec:
+#   selector:
+#     istio: ingressgateway # use istio default controller
+#   servers:
+#   - hosts:
+#     - "dashboard.korakakis.com"
+#     port:
+#       name: https
+#       number: 443
+#       protocol: HTTPS
+#     tls:
+#       mode: PASSTHROUGH
+# ---
+# apiVersion: networking.istio.io/v1alpha3
+# kind: VirtualService
+# metadata:
+#   name: dashboard
+#   namespace: wordpress
+# spec:
+#   hosts:
+#   - "dashboard.korakakis.com"
+#   gateways:
+#   - dashboard-gateway
+#   tls:
+#   - match:
+#     - port: 443
+#       sniHosts:
+#       - dashboard.korakakis.com
+#     route:
+#     - destination:
+#         host: kubernetes-dashboard.kube-system.svc.cluster.local
+#         port:
+#           number: 443
 # kubectl describe secret deployment-controller-token-* -n kube-system
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: motobook-gateway
-  namespace: motobook
+  name: wordpress-gateway
+  namespace: wordpress
 spec:
   selector:
     istio: ingressgateway # use istio default controller
@@ -69,13 +69,13 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: motobook
-  namespace: motobook
+  name: wordpress
+  namespace: wordpress
 spec:
   hosts:
   - "*"
   gateways:
-  - motobook-gateway
+  - wordpress-gateway
   http: 
 #     - match:
 #       - uri:
@@ -92,7 +92,7 @@ spec:
        - destination:
            host: wordpress
            port:
-             number: 3000  
+             number: 80  
      - match:      
        - authority:
           exact: "kiali.korakakis.com"
@@ -174,10 +174,6 @@ spec:
        - authority:
           exact: "grafana.korakakis.com"
        route:
-       - destination:
-           host: redirect
-           port:
-             number: 80
        - destination:
            host: redirect
            port:

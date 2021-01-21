@@ -17,8 +17,8 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         port:  22 
         script: |
-          kubectl delete all --all -n motobook 
-          kubectl delete ns motobook 
+          kubectl delete all --all -n wordpress 
+          kubectl delete ns wordpress 
           kubectl delete -f Kubernetes/
           kubectl delete clusterissuer letsencrypt-staging letsencrypt-production -n istio-system
           kubectl delete certificate ingress-cert-staging ingress-cert-production -n istio-system

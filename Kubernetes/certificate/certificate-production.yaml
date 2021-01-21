@@ -14,5 +14,5 @@ spec:
   - zen1one.korakakis.com
   - kiali.korakakis.com
   - grafana.korakakis.com
-  - dashboard.korakakis.com
+  # - dashboard.korakakis.com
 
