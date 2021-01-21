@@ -1,0 +1,184 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: dashboard-gateway
+  namespace: wordpress
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - hosts:
+    - "dashboard.korakakis.com"
+    port:
+      name: https
+      number: 443
+      protocol: HTTPS
+    tls:
+      mode: PASSTHROUGH
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: dashboard
+  namespace: wordpress
+spec:
+  hosts:
+  - "dashboard.korakakis.com"
+  gateways:
+  - dashboard-gateway
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - dashboard.korakakis.com
+    route:
+    - destination:
+        host: kubernetes-dashboard.kube-system.svc.cluster.local
+        port:
+          number: 443
+# kubectl describe secret deployment-controller-token-* -n kube-system
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: motobook-gateway
+  namespace: motobook
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+#  - hosts:
+#    - "*"
+#    port:
+#      name: http
+#      number: 80
+#      protocol: HTTP
+#    tls:
+#      httpsRedirect: true
+  - hosts:
+    - "*"
+    port:
+      name: https
+      number: 443
+      protocol: HTTPS
+    tls:
+      credentialName: ingress-cert-production
+      mode: SIMPLE
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: motobook
+  namespace: motobook
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - motobook-gateway
+  http: 
+#     - match:
+#       - uri:
+#           prefix: /.well-known/
+#       route:
+#       - destination: 
+#           host: cm-acme-http-solver-prhvd.istio-system.svc.cluster.local
+#           port:
+#             number: 8089
+     - match:
+       - authority:
+          exact: "zen1one.korakakis.com"
+       route:
+       - destination:
+           host: client
+           port:
+             number: 3000  
+     - match:      
+       - authority:
+          exact: "kiali.korakakis.com"
+       route:
+       - destination:
+           host: kiali.istio-system.svc.cluster.local
+           port:
+             number: 20001
+     - match:      
+       - authority:
+          exact: "grafana.korakakis.com"
+       route:
+       - destination:
+           host: grafana.istio-system.svc.cluster.local
+           port:
+             number: 3000
+
+
+    #  - route:
+    #    - destination:
+    #        host: client
+    #        port:
+    #         number: 3000
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: http-gateway
+  namespace: wordpress
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - hosts:
+    - "*"
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+#    tls:
+#      httpsRedirect: true
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: http
+  namespace: wordpress
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - http-gateway
+  http:
+#     - match:
+#       - uri:
+#           prefix: /.well-known/
+#       route:
+#       - destination: 
+#           host: cm-acme-http-solver-prhvd.istio-system.svc.cluster.local
+#           port:
+#             number: 8089
+     - match:
+       - authority:
+          exact: "zen1one.korakakis.com"
+       route:
+       - destination:
+           host: redirect
+           port:
+             number: 80
+     - match:      
+       - authority:
+          exact: "kiali.korakakis.com"
+       route:
+       - destination:
+           host: redirect
+           port:
+             number: 801
+     - match:      
+       - authority:
+          exact: "grafana.korakakis.com"
+       route:
+       - destination:
+           host: redirect
+           port:
+             number: 80
+       - destination:
+           host: redirect
+           port:
+             number: 80

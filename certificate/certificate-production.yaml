@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: ingress-cert-production
+  namespace: istio-system
+spec:
+  secretName: ingress-cert-production
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: korakakis.com
+  dnsNames:
+  - korakakis.com
+  - zen1one.korakakis.com
+  - kiali.korakakis.com
+  - grafana.korakakis.com
+  - dashboard.korakakis.com
+
