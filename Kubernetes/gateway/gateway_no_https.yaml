@@ -1,8 +1,8 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: motobook-gateway
-  namespace: motobook
+  name: wordpress-gateway
+  namespace: wordpress
 spec:
   selector:
     istio: ingressgateway # use istio default controller
@@ -17,38 +17,23 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: motobook
-  namespace: motobook
+  name: wordpress
+  namespace: wordpress
 spec:
   hosts:
   - "*"
   gateways:
-  - motobook-gateway
+  - wordpress-gateway
   http: 
      - match:      
        - authority:
-          exact: "identity.moto-book.com"
+          exact: "zen1one.korakakis.com"
        route:
        - destination:
-           host: identity
+           host: wordpress
            port:
              number: 80
-     - match:      
-       - authority:
-          exact: "www.moto-book.com"
-       route:
-       - destination:
-           host: client
-           port:
-             number: 3000
-     - match:      
-       - authority:
-          exact: "api.moto-book.com"
-       route:
-       - destination:
-           host: api
-           port:
-             number: 80
+  
      - match:      
        - authority:
           exact: "kiali.moto-book.com"
@@ -59,23 +44,10 @@ spec:
              number: 20001
      - match:      
        - authority:
-          exact: "grafana.moto-book.com"
+          exact: "grafana.korakakis.com"
        route:
        - destination:
            host: grafana.istio-system.svc.cluster.local
            port:
              number: 3000
-     - match:      
-       - authority:
-          exact: "pgadmin.moto-book.com"
-       route:
-       - destination:
-           host: pgadmin.motobook.svc.cluster.local
-           port:
-             number: 8080
-    #  - route:
-    #    - destination:
-    #        host: client
-    #        port:
-    #         number: 3000
-      
+   
