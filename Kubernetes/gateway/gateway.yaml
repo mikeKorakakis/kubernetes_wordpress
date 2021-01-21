@@ -90,7 +90,7 @@ spec:
           exact: "zen1one.korakakis.com"
        route:
        - destination:
-           host: client
+           host: wordpress
            port:
              number: 3000  
      - match:      
