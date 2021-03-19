@@ -59,7 +59,6 @@ jobs:
         port:  22 
         script:  kubectl apply -f Kubernetes/namespace/ns.yaml &&
            kubectl apply -f Kubernetes/ && 
-          kubectl apply -f Kubernetes/virtual_services/  &&
           kubectl apply -f Kubernetes/authentication_namespace/ &&
           kubectl apply -f Kubernetes/gateway/gateway_no_https.yaml &&
           kubectl apply -f Kubernetes/certificate/ &&
