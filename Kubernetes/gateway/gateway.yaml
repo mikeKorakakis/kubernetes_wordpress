@@ -169,7 +169,7 @@ spec:
        - destination:
            host: redirect
            port:
-             number: 801
+             number: 80
      - match:      
        - authority:
           exact: "grafana.korakakis.com"
