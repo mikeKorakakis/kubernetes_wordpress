@@ -21,7 +21,7 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         port:  22 
         script: |         
-          rm -rf Kubernetes/
+          rm -rf kubernetes_wordpress/
 
       
     - name: copy kubernetes folder via ssh password
@@ -31,8 +31,8 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.SERVER_PASSWORD }}
         port: 22
-        source: "Kubernetes/*"
-        target: "/home/${{ secrets.SERVER_USER }}"
+        source: "kubernetes_wordpress/*"
+        target: "/home/${{ secrets.SERVER_USER }}/"
       
     # - name: remote ssh delete old k8s manifests
     #   uses: appleboy/ssh-action@master
@@ -57,10 +57,9 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.SERVER_PASSWORD }}
         port:  22 
-        script:  kubectl apply -f Kubernetes/namespace/ns.yaml &&
-           kubectl apply -f Kubernetes/ && 
-          kubectl apply -f Kubernetes/namespace/ &&
-          kubectl apply -f Kubernetes/gateway/gateway_no_https.yaml &&
-          kubectl apply -f Kubernetes/certificate/ &&
-          sleep 5m &&
-          kubectl apply -f Kubernetes/gateway/gateway.yaml
+        script: kubectl apply -f kubernetes_wordpress/namespace/ &&
+           kubectl apply -f kubernetes_wordpress/ && 
+          kubectl apply -f kubernetes_wordpress/gateway/gateway.yaml
+          # kubectl apply -f kubernetes_wordpress/gateway/gateway_no_https.yaml &&
+          # kubectl apply -f kubernetes_wordpress/certificate/ &&
+          # sleep 5m &&
